@@ -1,57 +1,57 @@
 1. create migration for admin table
 
-php artisan make:model Admin -m
+        php artisan make:model Admin -m
 
 
- Schema::create('admins', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->string('password');
-            $table->rememberToken();
-            $table->timestamps();
-        });
+         Schema::create('admins', function (Blueprint $table) {
+                    $table->increments('id');
+                    $table->string('name');
+                    $table->string('email')->unique();
+                    $table->string('password');
+                    $table->rememberToken();
+                    $table->timestamps();
+                });
 
 
 2. make changes in Admin model in app/Admin.php
 
 
-<?php
+        <?php
 
-namespace App;
+        namespace App;
 
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use App\Notifications\AdminResetPasswordNotification;
+        use Illuminate\Notifications\Notifiable;
+        use Illuminate\Foundation\Auth\User as Authenticatable;
+        use App\Notifications\AdminResetPasswordNotification;
 
-class Admin extends Authenticatable
-{
+        class Admin extends Authenticatable
+        {
 
-	use Notifiable;
+            use Notifiable;
 
-    // declare guard type
-    protected $guard = 'admin';
+            // declare guard type
+            protected $guard = 'admin';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'name', 'email', 'password',
-    ];
+            /**
+             * The attributes that are mass assignable.
+             *
+             * @var array
+             */
+            protected $fillable = [
+                'name', 'email', 'password',
+            ];
 
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
-    protected $hidden = [
-        'password', 'remember_token',
-    ];
+            /**
+             * The attributes that should be hidden for arrays.
+             *
+             * @var array
+             */
+            protected $hidden = [
+                'password', 'remember_token',
+            ];
 
-    
-}
+
+        }
 
 
 
@@ -62,78 +62,78 @@ class Admin extends Authenticatable
 
 
 
-@extends('layouts.app')
-@section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Login') }}</div>
+            @extends('layouts.app')
+            @section('content')
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-header">{{ __('Login') }}</div>
 
-                <div class="card-body">
-                    <form method="POST" action="">
-                        @csrf
+                            <div class="card-body">
+                                <form method="POST" action="">
+                                    @csrf
 
-                        <div class="form-group row">
-                            <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
+                                    <div class="form-group row">
+                                        <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
 
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
+                                        <div class="col-md-6">
+                                            <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
 
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+                                            @error('email')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
+
+                                        <div class="col-md-6">
+                                            <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
+
+                                            @error('password')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <div class="col-md-6 offset-md-4">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
+
+                                                <label class="form-check-label" for="remember">
+                                                    {{ __('Remember Me') }}
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row mb-0">
+                                        <div class="col-md-8 offset-md-4">
+                                            <button type="submit" class="btn btn-primary">
+                                                {{ __('Login') }}
+                                            </button>
+
+                                            @if (Route::has('password.request'))
+                                                <a class="btn btn-link" href="">
+                                                    {{ __('Forgot Your Password?') }}
+                                                </a>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                         </div>
-
-                        <div class="form-group row">
-                            <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
-
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <div class="col-md-6 offset-md-4">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
-
-                                    <label class="form-check-label" for="remember">
-                                        {{ __('Remember Me') }}
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group row mb-0">
-                            <div class="col-md-8 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Login') }}
-                                </button>
-
-                                @if (Route::has('password.request'))
-                                    <a class="btn btn-link" href="">
-                                        {{ __('Forgot Your Password?') }}
-                                    </a>
-                                @endif
-                            </div>
-                        </div>
-                    </form>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
-@endsection
+            @endsection
 
 
 
@@ -143,27 +143,27 @@ class Admin extends Authenticatable
 
 3. create controller for admin login page in AuthAdmin/LoginController.php
 
-			php artisan make:controller AuthAdmin/LoginController
+                php artisan make:controller AuthAdmin/LoginController
 
 
 
-			<?php
+                <?php
 
-			namespace App\Http\Controllers\AuthAdmin;
+                namespace App\Http\Controllers\AuthAdmin;
 
-			use App\Http\Controllers\Controller;
-			use Illuminate\Http\Request;
+                use App\Http\Controllers\Controller;
+                use Illuminate\Http\Request;
 
-			class LoginController extends Controller
-			{
-			    //
+                class LoginController extends Controller
+                {
+                    //
 
-			    public function showLoginForm()
-			    {
-			        return view('authAdmin.login');
-			    }
+                    public function showLoginForm()
+                    {
+                        return view('authAdmin.login');
+                    }
 
-			}
+                }
 
 
 
