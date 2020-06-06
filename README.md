@@ -244,21 +244,21 @@
 6. add constuctor function for middlewar of authenication in authAdmin/LoginController.php
 
 
- public function __construct()
-    {
-        $this->middleware('guest:admin')->except(['logout']);
-    }
+         public function __construct()
+            {
+                $this->middleware('guest:admin')->except(['logout']);
+            }
 
 
  7. Add LOgin Function in authAdmin/loginController.php
 
 
-  public function login(Request $request)
-    {
-        $this->validate($request, [
-            'email' => 'required|email',
-            'password' => 'required|min:6'
-        ]);
+          public function login(Request $request)
+            {
+                $this->validate($request, [
+                    'email' => 'required|email',
+                    'password' => 'required|min:6'
+                ]);
 
         $credential = [
             'email' => $request->email,
@@ -280,29 +280,29 @@
 
 
 	
-@extends('layouts.app')
+        @extends('layouts.app')
 
-@section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">Admin Dashboard</div>
+        @section('content')
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">Admin Dashboard</div>
 
-                <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
+                        <div class="card-body">
+                            @if (session('status'))
+                                <div class="alert alert-success" role="alert">
+                                    {{ session('status') }}
+                                </div>
+                            @endif
+
+                            You are logged in as Admin
                         </div>
-                    @endif
-
-                    You are logged in as Admin
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
-@endsection
+            </div>
+            @endsection
 
 
 9. add new controller  for admindashboard redirect 
@@ -311,26 +311,26 @@
 
 		<?php
 
-namespace App\Http\Controllers;
+        namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+        use Illuminate\Http\Request;
 
-class AdminController extends Controller
-{
-     public function __construct()
-    {
-        $this->middleware('auth:admin');
-    }
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        return view('admin.home');
-    }
-}
+        class AdminController extends Controller
+        {
+             public function __construct()
+            {
+                $this->middleware('auth:admin');
+            }
+            /**
+             * Show the application dashboard.
+             *
+             * @return \Illuminate\Http\Response
+             */
+            public function index()
+            {
+                return view('admin.home');
+            }
+        }
 
 
 
@@ -338,11 +338,11 @@ class AdminController extends Controller
 9. add route for dashboard page after login  in
 
 
-Route::prefix('admin')->group(function() {
-    Route::get('/', 'AdminController@index')->name('admin.home');
-    Route::get('/login', 'AuthAdmin\LoginController@showLoginForm')->name('admin.login');
-    Route::post('/login', 'AuthAdmin\LoginController@login')->name('admin.login.submit');
-});
+        Route::prefix('admin')->group(function() {
+            Route::get('/', 'AdminController@index')->name('admin.home');
+            Route::get('/login', 'AuthAdmin\LoginController@showLoginForm')->name('admin.login');
+            Route::post('/login', 'AuthAdmin\LoginController@login')->name('admin.login.submit');
+        });
 
 
 10. add route in authAdmin/login.blade.php
@@ -353,14 +353,14 @@ Route::prefix('admin')->group(function() {
 11. add logout function in authAdmin/LoginController.php
 
 
-	  public function logout(Request $request)
-    {
-        Auth::guard('admin')->logout();
+          public function logout(Request $request)
+        {
+            Auth::guard('admin')->logout();
 
-//        $request->session()->invalidate();
+         //        $request->session()->invalidate();
 
-        return redirect('/');
-    }
+            return redirect('/');
+        }
 
  12. add route in web.php 
 
@@ -433,19 +433,19 @@ Route::prefix('admin')->group(function() {
 14. add  some code in Exception/Handler.php
 
 
-use Illuminate\Support\Arr;
-use Exception;
-//use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Request;
-use Response;
-use Illuminate\Auth\AuthenticationException;
+        use Illuminate\Support\Arr;
+        use Exception;
+        //use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+        use Request;
+        use Response;
+        use Illuminate\Auth\AuthenticationException;
 
 
-protected function unauthenticated($request, AuthenticationException $exception)
-    {
-//        return $request->expectsJson()
-//            ? response()->json(['message' => 'Unauthenticated.'], 401)
-//            : redirect()->guest(route('login'));
+        protected function unauthenticated($request, AuthenticationException $exception)
+            {
+        //        return $request->expectsJson()
+        //            ? response()->json(['message' => 'Unauthenticated.'], 401)
+        //            : redirect()->guest(route('login'));
 
         if ($request->expectsJson()) {
             return response()->json(['error' => 'Unauthenticated.'], 401);
@@ -472,11 +472,11 @@ protected function unauthenticated($request, AuthenticationException $exception)
 15. add some code on middle/RedirectIfAuthenticated.php file
 
 
- public function handle($request, Closure $next, $guard = null)
-    {
-        // if (Auth::guard($guard)->check()) {
-        //     return redirect(RouteServiceProvider::HOME);
-        // }
+         public function handle($request, Closure $next, $guard = null)
+            {
+                // if (Auth::guard($guard)->check()) {
+                //     return redirect(RouteServiceProvider::HOME);
+                // }
 
         switch ($guard){
             case 'admin':
@@ -500,21 +500,21 @@ protected function unauthenticated($request, AuthenticationException $exception)
  
 
 
- public function logout(Request $request)
-    {
-        $this->guard()->logout();
+         public function logout(Request $request)
+            {
+                $this->guard()->logout();
 
-      //  $request->session()->invalidate();
-         return redirect('/');
+          //  $request->session()->invalidate();
+             return redirect('/');
 
-        // $request->session()->regenerateToken();
+            // $request->session()->regenerateToken();
 
-        // if ($response = $this->loggedOut($request)) {
-        //     return $response;
-        // }
+            // if ($response = $this->loggedOut($request)) {
+            //     return $response;
+            // }
 
-        // return $request->wantsJson()
-        //     ? new Response('', 204)
-        //     : redirect('/');
-    }
+            // return $request->wantsJson()
+            //     ? new Response('', 204)
+            //     : redirect('/');
+        }
    
